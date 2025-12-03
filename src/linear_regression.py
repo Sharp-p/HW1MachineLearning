@@ -1,37 +1,12 @@
+import os
+
+import joblib
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
 
-import joblib
-import pandas as pd
-import numpy as np
-import os
 
-def main():
-    trainer = LinearTrainer()
-    # load training and test data
-    train_x, train_y, test_x, test_y = load_data()
-
-    # preprocess data (normalization)
-    trainer.train(train_x, train_y)
-
-    # linear regression
-    trainer.evaluate(test_x, test_y)
-
-
-def load_data() -> np.array:
-    path = os.path.dirname(os.path.abspath(__file__))
-    train_ds = pd.read_csv(path + '/../datasets/reacher3_train_1.csv')
-    input_training = train_ds.iloc[:, :7].to_numpy()
-    output_training = train_ds.iloc[:, -3:].to_numpy()
-
-    test_ds = pd.read_csv(path + '/../datasets/reacher3_test_1.csv')
-    input_test = test_ds.iloc[:, :7].to_numpy()
-    output_test = test_ds.iloc[:, -3:].to_numpy()
-    return input_training, output_training, input_test, output_test
-
-
-class LinearTrainer:
+class LinearRegressionModel:
     def __init__(self, model_name="reacher3_linear"):
         self.model_name = model_name
         self.model = LinearRegression()
@@ -72,24 +47,25 @@ class LinearTrainer:
 
     def save_checkpoint(self, folder="checkpoints"):
         print("Saving checkpoint...")
-        if not os.path.exists(folder):
-            os.makedirs(folder)
+        path = os.path.dirname(os.path.abspath(__file__))
+        folder_path = os.path.join(path + '/../', folder)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
 
-        joblib.dump(self.model, folder + '/' + self.model_name + '_model.pkl')
-        joblib.dump(self.scaler_X, folder + '/' + self.model_name + '_scalerX.pkl')
-        joblib.dump(self.scaler_Y, folder + '/' + self.model_name + '_scalerY.pkl')
+        joblib.dump(self.model, folder_path + '/' + self.model_name + '_model.pkl')
+        joblib.dump(self.scaler_X, folder_path + '/' + self.model_name + '_scalerX.pkl')
+        joblib.dump(self.scaler_Y, folder_path + '/' + self.model_name + '_scalerY.pkl')
         print("Done!")
 
     def load_checkpoint(self, folder="checkpoints"):
         print("Loading checkpoint...")
+        path = os.path.dirname(os.path.abspath(__file__))
+        folder_path = os.path.join(path + '/../', folder)
         try:
-            self.model = joblib.load(folder + '/' + self.model_name + '_model.pkl')
-            self.scaler_X = joblib.load(folder + '/' + self.model_name + '_scalerX.pkl')
-            self.scaler_Y = joblib.load(folder + '/' + self.model_name + '_scalerY.pkl')
+            self.model = joblib.load(folder_path + '/' + self.model_name + '_model.pkl')
+            self.scaler_X = joblib.load(folder_path + '/' + self.model_name + '_scalerX.pkl')
+            self.scaler_Y = joblib.load(folder_path + '/' + self.model_name + '_scalerY.pkl')
             self.is_trained = True
             print("Done!")
         except FileNotFoundError:
             print("ERROR: no saved checkpoint found!")
-
-if __name__ == "__main__":
-    main()
