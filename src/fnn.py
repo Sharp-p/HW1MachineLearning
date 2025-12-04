@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from tensorflow.python.keras.initializers.initializers_v2 import Initializer
 
 
-class FNNTrainer:
+class FNNModel:
     def __init__(self, input_dim, output_dim, model_name="reacherN_fnn"):
         """
         Initializer
@@ -120,7 +120,8 @@ class FNNTrainer:
     def save_checkpoint(self, folder="checkpoints"):
         """
         Save the Keras model and the scikit-learn scalers
-        :param folder: folder to save the model and scikit-learn scalers, relative to the project root
+        :param folder: folder to save the model and scikit-learn scalers,
+            relative to the project root
         """
         path = os.path.dirname(os.path.abspath(__file__))
         folder_path = os.path.join(path + '/../', folder)
@@ -140,7 +141,8 @@ class FNNTrainer:
     def load_checkpoint(self, folder="checkpoints"):
         """
         Loading model and scaler.
-        :param folder: the folder to load the model from, relative to the project root
+        :param folder: the folder to load the model from,
+            relative to the project root
         :return:
         """
         path = os.path.dirname(os.path.abspath(__file__))
