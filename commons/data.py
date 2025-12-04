@@ -2,6 +2,10 @@ import os
 import pandas as pd
 
 def load_data():
+    """
+    Loads data from the reacher3 dataset.
+    :return: (X_train, Y_train, x_test, y_test)
+    """
     path = os.path.dirname(os.path.abspath(__file__))
     train_ds = pd.read_csv(path + '/../datasets/reacher3_train_1.csv')
     input_training = train_ds.iloc[:, :7].to_numpy()
