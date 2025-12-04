@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 
 
 class LinearRegressionModel:
-    def __init__(self, model_name="reacher3_linear"):
+    def __init__(self, model_name="reacherN_linear"):
         self.model_name = model_name
         self.model = LinearRegression()
         self.scaler_X = StandardScaler()
@@ -42,7 +42,7 @@ class LinearRegressionModel:
 
         print("Results:")
         print("MSE: %f" % mse)
-        print("SCORE: %f" % r2)
+        print("R2 score: %f" % r2)
         return y_pred
 
     def save_checkpoint(self, folder="checkpoints"):
