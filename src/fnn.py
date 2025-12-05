@@ -135,9 +135,9 @@ class FNNModel:
 
         # saving scalers
         joblib.dump(self.scaler_X, folder_path + '/' +
-                    self.model_name + '.scalerX.pkl')
+                    self.model_name + '_scalerX.pkl')
         joblib.dump(self.scaler_Y, folder_path + '/' +
-                    self.model_name + '.scalerY.pkl')
+                    self.model_name + '_scalerY.pkl')
         print("Done!")
 
     def load_checkpoint(self, folder="checkpoints"):

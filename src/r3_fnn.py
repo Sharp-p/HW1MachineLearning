@@ -7,10 +7,10 @@ from commons.data import load_data
 def train(fnn: FNNModel, train_x, train_y, new_train = False):
     fnn.build_model()
     path = os.path.dirname(os.path.abspath(__file__))
-    if (glob(path + '/../checkpoints/' + fnn.model_name + '.keras') and
-        glob(path + '/../checkpoints/' + fnn.model_name + '_scalerX.pkl') and
-        glob(path + '/../checkpoints/' + fnn.model_name + '_scalerY.pkl') and
-        not new_train):
+    if glob(path + '/../checkpoints/' + fnn.model_name + '.keras') and \
+        glob(path + '/../checkpoints/' + fnn.model_name + '_scalerX.pkl') and \
+        glob(path + '/../checkpoints/' + fnn.model_name + '_scalerY.pkl') and \
+        not new_train:
         print("Loading checkpoint...")
         fnn.load_checkpoint()
         print("Done!")
