@@ -1,4 +1,6 @@
 import os
+from glob import glob
+
 import joblib
 import numpy as np
 import tensorflow as tf
@@ -108,6 +110,15 @@ class FNNModel:
         """
         if self.history:
             plt.figure(figsize=(10, 6))
+            path = os.path.dirname(os.path.abspath(__file__))
+            ful_his = []
+            if glob(path + '/../checkpoints/' + self.model_name + '_historyHistory.pkl'):
+                ful_his = joblib.load(path + '/../checkpoints/' + self.model_name + '_historyHistory.pkl')
+                # TODO: unite dict
+                for key, val in self.history.history.items():
+                    ful_his[key] = ful_his[key] + val
+                self.history.history = ful_his
+
             plt.plot(self.history.history['loss'], label="Train Loss")
             plt.plot(self.history.history['val_loss'], label="Validation Loss")
             plt.title(f'Loss curve - {self.model_name}')
@@ -138,6 +149,8 @@ class FNNModel:
                     self.model_name + '_scalerX.pkl')
         joblib.dump(self.scaler_Y, folder_path + '/' +
                     self.model_name + '_scalerY.pkl')
+        joblib.dump(self.history.history, folder_path + '/' +
+                    self.model_name + '_historyHistory.pkl')
         print("Done!")
 
     def load_checkpoint(self, folder="checkpoints"):
@@ -153,6 +166,7 @@ class FNNModel:
             self.model = load_model(folder_path + '/' + self.model_name + '.keras')
             self.scaler_X = joblib.load(folder_path + '/' + self.model_name + '_scalerX.pkl')
             self.scaler_Y = joblib.load(folder_path + '/' + self.model_name + '_scalerY.pkl')
+            #self.history.history = joblib.load(folder_path + '/' + self.model_name + '_historyHistory.pkl')
             print("Checkpoint and data scalers loaded!")
         except FileNotFoundError:
             print("Checkpoint and data scalers not found!")

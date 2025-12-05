@@ -10,6 +10,7 @@ def train(fnn: FNNModel, train_x, train_y, new_train = False):
     if glob(path + '/../checkpoints/' + fnn.model_name + '.keras') and \
         glob(path + '/../checkpoints/' + fnn.model_name + '_scalerX.pkl') and \
         glob(path + '/../checkpoints/' + fnn.model_name + '_scalerY.pkl') and \
+        glob(path + '/../checkpoints/' + fnn.model_name + '_historyHistory.pkl') and \
         not new_train:
         print("Loading checkpoint...")
         fnn.load_checkpoint()
@@ -18,7 +19,6 @@ def train(fnn: FNNModel, train_x, train_y, new_train = False):
     print("Training...")
     # TODO: forse loop sugli iperparametri della FNN
     fnn.train(train_x, train_y)
-    fnn.save_checkpoint()
     print("Done!")
 
 def evaluate(fnn: FNNModel, test_x, test_y):
@@ -30,6 +30,7 @@ def train_eval():
     train(fnn, train_x, train_y)
     evaluate(fnn, test_x, test_y)
     fnn.plot_loss()
+    fnn.save_checkpoint()
 
 if __name__ == "__main__":
     train_eval()
