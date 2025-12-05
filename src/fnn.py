@@ -131,7 +131,7 @@ class FNNModel:
 
         print("Saving model checkpoint and data scalers...")
         # saving to keras's native format
-        self.model.save(folder_path + '/' + self.model_name + '.h5')
+        self.model.save(folder_path + '/' + self.model_name + '.keras')
 
         # saving scalers
         joblib.dump(self.scaler_X, folder_path + '/' +
@@ -150,9 +150,9 @@ class FNNModel:
         path = os.path.dirname(os.path.abspath(__file__))
         folder_path = os.path.join(path + '/../', folder)
         try:
-            self.model = load_model(folder_path + '/' + self.model_name + '.h5')
-            self.scaler_X = joblib.load(folder_path + '/' + self.model_name + '.scalerX.pkl')
-            self.scaler_Y = joblib.load(folder_path + '/' + self.model_name + '.scalerY.pkl')
+            self.model = load_model(folder_path + '/' + self.model_name + '.keras')
+            self.scaler_X = joblib.load(folder_path + '/' + self.model_name + '_scalerX.pkl')
+            self.scaler_Y = joblib.load(folder_path + '/' + self.model_name + '_scalerY.pkl')
             print("Checkpoint and data scalers loaded!")
         except FileNotFoundError:
             print("Checkpoint and data scalers not found!")
