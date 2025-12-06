@@ -3,34 +3,19 @@ from glob import glob
 
 from src.fnn import FNNModel
 from commons.data import load_data
-
-def train(fnn: FNNModel, train_x, train_y, new_train = False):
-    fnn.build_model()
-    path = os.path.dirname(os.path.abspath(__file__))
-    if glob(path + '/../checkpoints/' + fnn.model_name + '.keras') and \
-        glob(path + '/../checkpoints/' + fnn.model_name + '_scalerX.pkl') and \
-        glob(path + '/../checkpoints/' + fnn.model_name + '_scalerY.pkl') and \
-        glob(path + '/../checkpoints/' + fnn.model_name + '_historyHistory.pkl') and \
-        not new_train:
-        print("Loading checkpoint...")
-        fnn.load_checkpoint()
-        print("Done!")
-
-    print("Training...")
-    # TODO: forse loop sugli iperparametri della FNN
-    fnn.train(train_x, train_y)
-    print("Done!")
-
-def evaluate(fnn: FNNModel, test_x, test_y):
-    fnn.evaluate(test_x, test_y)
+from commons.experimenter import train, evaluate
 
 def train_eval():
+    # TODO: generare esperimenti per r3
     train_x, train_y, test_x, test_y = load_data()
+
+    # TODO: loop sull'istanzazione della fnn e il training con esperimenti diversi
     fnn = FNNModel(input_dim=7, output_dim=3, model_name="reacher3_fnn")
     train(fnn, train_x, train_y)
     evaluate(fnn, test_x, test_y)
     fnn.plot_loss()
-    fnn.save_checkpoint()
+    # not using checkpoints since WandB implementations, integration not yet considered
+    #fnn.save_checkpoint()
 
 if __name__ == "__main__":
     train_eval()

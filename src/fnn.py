@@ -49,7 +49,7 @@ class FNNModel:
 
         print("Model ", self.model, " built!")
 
-    def train(self, X_train, Y_train, epochs=50, batch_size=32, val_split=0.2) -> None:
+    def train(self, X_train, Y_train, epochs=50, batch_size=32, val_split=0.2, callback = None) -> None:
         """
         Normalize data and train network
 
@@ -74,7 +74,8 @@ class FNNModel:
             epochs=epochs,
             batch_size=batch_size,
             validation_split=val_split,
-            verbose=1
+            verbose=1,
+            callbacks=[callback]
         )
         self.is_trained = True
         print("Done!")
