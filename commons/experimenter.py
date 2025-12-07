@@ -71,14 +71,17 @@ def train_eval(train_x, train_y, test_x, test_y, PROJECT_NAME):
     # calculates which dataset is this
     N = train_y.shape[1]
     # creates the configs for this series of experiments
+    """[[320, 320],
+     [169, 160, 160, 160],
+     [107, 107, 107, 107, 107, 107, ],
+     [80, 80, 80, 80, 80, 80, 80, 80],
+     [64, 64, 64, 64, 64, 64, 64, 64, 64, 64]]"""
     param_grid = {"hidden_layers": [[320, 320],
-                                    [169, 160, 160, 160],
                                     [107, 107, 107, 107, 107, 107,],
-                                    [80, 80, 80, 80, 80, 80, 80, 80],
                                     [64, 64, 64, 64, 64, 64, 64, 64, 64, 64]],
                   "lr": [0.1, 0.01, 0.001, 0.0001],
-                  "val_split": [0.8, 0.5, 0.2, 0.1, 0.05],
                   "batch_size": [16, 32, 64, 128],
+                  "val_split": [0.8, 0.5, 0.2, 0.1, 0.05],
                   "activation": ["relu", "tanh"],
                   "epochs": [400],
                   "dataset": [f"Reacher{N}"]}
