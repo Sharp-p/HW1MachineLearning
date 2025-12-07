@@ -3,6 +3,7 @@ import os
 
 import pandas as pd
 import wandb
+from keras.src.callbacks import EarlyStopping
 
 from wandb.integration.keras import WandbMetricsLogger
 from src.fnn import FNNModel
@@ -38,7 +39,8 @@ def train(fnn: FNNModel, train_x, train_y, config=None, new_train=False):
               config["epochs"],
               config["batch_size"],
               config["val_split"],
-              callback=[WandbMetricsLogger()])
+              callback=[WandbMetricsLogger(), EarlyStopping(patience=20,
+                                                            restore_best_weights=True)],)
     print("Done!")
 
 def evaluate(fnn: FNNModel, test_x, test_y, config):
@@ -81,9 +83,9 @@ def train_eval(train_x, train_y, test_x, test_y, PROJECT_NAME):
                                     [160, 160, 160, 160, 160, 160, 160, 160],
                                     [142, 142, 142, 142, 142, 142, 142, 142, 142],
                                     [128, 128, 128, 128, 128, 128, 128, 128, 128, 128]],
-                  "val_split": [0.8, 0.5, 0.2, 0.1, 0.01],
                   "activation": ["relu", "tanh"],
-                  "epochs": [300],
+                  "val_split": [0.125],
+                  "epochs": [400],
                   "dataset": [f"Reacher{N}"]}
 
     keys, values = zip(*param_grid.items())
