@@ -78,7 +78,7 @@ class FNNModel:
         self.is_trained = True
         print("Done!")
 
-    def evaluate(self, X_test, Y_test) -> float:
+    def evaluate(self, X_test, Y_test):
         """
         Evaluate network on normalized datas
         :param X_test: test data
@@ -101,7 +101,7 @@ class FNNModel:
 
         print("MSE: ", mse)
         print("R2 score: ", r2)
-        return y_pred
+        return y_pred, mse, r2
 
     def plot_loss(self):
         """
@@ -137,10 +137,10 @@ class FNNModel:
             relative to the project root
         """
         path = os.path.dirname(os.path.abspath(__file__))
-        folder_path = os.path.join(path + '/../', folder)
+        folder_path = os.path.join(path + '/../', folder, self.model_name)
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
-            print("Folder created!")
+            #print("Folder created!")
 
         print("Saving model checkpoint and data scalers...")
         # saving to keras's native format
