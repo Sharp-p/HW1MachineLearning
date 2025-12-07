@@ -39,7 +39,7 @@ def train(fnn: FNNModel, train_x, train_y, config=None, new_train=False):
               config["epochs"],
               config["batch_size"],
               config["val_split"],
-              callback=[WandbMetricsLogger(), EarlyStopping(patience=40,
+              callback=[WandbMetricsLogger(), EarlyStopping(patience=50,
                                                             restore_best_weights=True)],)
     print("Done!")
 
@@ -71,20 +71,15 @@ def train_eval(train_x, train_y, test_x, test_y, PROJECT_NAME):
     # calculates which dataset is this
     N = train_y.shape[1]
     # creates the configs for this series of experiments
-    param_grid = {"lr": [0.1, 0.01, 0.001, 0.0001],
-                  "batch_size": [16, 32, 64, 128],
-                  "hidden_layers": [[1280],
-                                    [640, 640],
-                                    [427, 427, 427],
-                                    [320, 320, 320, 320],
-                                    [256, 256, 256, 256, 256],
-                                    [213, 213, 213, 213, 213, 213],
-                                    [183, 183, 183, 183, 183, 183, 183],
-                                    [160, 160, 160, 160, 160, 160, 160, 160],
-                                    [142, 142, 142, 142, 142, 142, 142, 142, 142],
-                                    [128, 128, 128, 128, 128, 128, 128, 128, 128, 128]],
-                  "activation": ["relu", "tanh"],
+    param_grid = {"hidden_layers": [[320, 320],
+                                    [169, 160, 160, 160],
+                                    [107, 107, 107, 107, 107, 107,],
+                                    [80, 80, 80, 80, 80, 80, 80, 80],
+                                    [64, 64, 64, 64, 64, 64, 64, 64, 64, 64]],
+                  "lr": [0.1, 0.01, 0.001, 0.0001],
                   "val_split": [0.8, 0.5, 0.2, 0.1, 0.05],
+                  "batch_size": [16, 32, 64, 128],
+                  "activation": ["relu", "tanh"],
                   "epochs": [400],
                   "dataset": [f"Reacher{N}"]}
 
