@@ -1,0 +1,2 @@
+lr,batch_size,hidden_layers,activation,val_split,epochs,dataset,mse,r2
+0.1,16,[1280],relu,0.125,400,Reacher3,0.001544755852160291,0.30705628725026746

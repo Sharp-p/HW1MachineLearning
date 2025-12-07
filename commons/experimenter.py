@@ -39,7 +39,7 @@ def train(fnn: FNNModel, train_x, train_y, config=None, new_train=False):
               config["epochs"],
               config["batch_size"],
               config["val_split"],
-              callback=[WandbMetricsLogger(), EarlyStopping(patience=20,
+              callback=[WandbMetricsLogger(), EarlyStopping(patience=40,
                                                             restore_best_weights=True)],)
     print("Done!")
 
@@ -84,7 +84,7 @@ def train_eval(train_x, train_y, test_x, test_y, PROJECT_NAME):
                                     [142, 142, 142, 142, 142, 142, 142, 142, 142],
                                     [128, 128, 128, 128, 128, 128, 128, 128, 128, 128]],
                   "activation": ["relu", "tanh"],
-                  "val_split": [0.125],
+                  "val_split": [0.8, 0.5, 0.2, 0.1, 0.05],
                   "epochs": [400],
                   "dataset": [f"Reacher{N}"]}
 
