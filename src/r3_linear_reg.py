@@ -1,7 +1,7 @@
 from glob import glob
 from linear_regression import *
 from commons.data import load_data
-import pandas as pd
+
 import os
 
 def train(train_x, train_y, model):

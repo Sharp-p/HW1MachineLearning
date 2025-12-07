@@ -1,3 +1,5 @@
+import itertools
+
 import wandb
 
 from wandb.integration.keras import WandbMetricsLogger
@@ -8,10 +10,12 @@ def train(fnn: FNNModel, train_x, train_y, config=None, new_train=False):
                                                 "epochs": 50,
                                                 "batch_size": 32,
                                                 "hidden_layers": [64, 64],
+                                                "val_split": 0.2,
+                                                "activation": "relu",
                                                 "input_dim": train_x.shape[0],
                                                 "output_dim": train_y.shape[0]}
 
-    fnn.build_model(config.hidden_layers, config.lr)
+    fnn.build_model(config.hidden_layers, config.lr, config.activation)
     """
     [WARNING] PROBABLY OUTDATED SINCE THE REST OF THE PROJECT HAS MOVED TO WandB 
 
@@ -28,10 +32,57 @@ def train(fnn: FNNModel, train_x, train_y, config=None, new_train=False):
         print("Done!")
     """
     print("Training...")
-    # TODO: forse loop sugli iperparametri della FNN
-    fnn.train(train_x, train_y, config.epochs, callback=[WandbMetricsLogger()])
+    fnn.train(train_x, train_y,
+              config.epochs,
+              config.batch_size,
+              config.val_split,
+              callback=[WandbMetricsLogger()])
     print("Done!")
-
 
 def evaluate(fnn: FNNModel, test_x, test_y):
     fnn.evaluate(test_x, test_y)
+
+def train_eval(train_x, train_y, test_x, test_y, PROJECT_NAME):
+    # calculates which dataset is this
+    N = train_y.shape[1]
+    # creates the configs for this series of experiments
+    param_grid = {"lr": [0.1, 0.01, 0.001, 0.0001],
+                  "batch_size": [16, 32, 64, 128],
+                  "hidden_layers": [[1280],
+                                    [640, 640],
+                                    [427, 427, 427],
+                                    [320, 320, 320, 320],
+                                    [256, 256, 256, 256, 256],
+                                    [213, 213, 213, 213, 213, 213],
+                                    [183, 183, 183, 183, 183, 183, 183],
+                                    [160, 160, 160, 160, 160, 160, 160, 160],
+                                    [142, 142, 142, 142, 142, 142, 142, 142, 142],
+                                    [128, 128, 128, 128, 128, 128, 128, 128, 128, 128]],
+                  "val_split": [0.8, 0.5, 0.2, 0.1, 0.01],
+                  "activation": ["relu", "tanh"],
+                  "epochs": [300],
+                  "dataset": [f"Reacher{N}"]}
+
+    keys, values = zip(*param_grid.items())
+    configs = [dict(zip(keys, v)) for v in itertools.product(*values)]
+
+    # loops over every configuration for this fnn
+    for i, config in enumerate(configs):
+        # start an experiment with a configuration
+        with wandb.init(project=PROJECT_NAME,
+                        entity="sharp-1986413-sapienza-universit-di-roma",
+                         config=config,
+                         group=config["dataset"],
+                         job_type="train",
+                         name=f"{config['dataset']}_arch{len(config['hidden_layers'])}_lr{config['lr']}_batch{config['batch_size']}_valS{config['val_split']}"
+                        ) as run:
+            # creating a model for this configuration and training it
+            fnn = FNNModel(input_dim=train_x.shape[1],
+                           output_dim=train_y.shape[1],
+                           model_name=run.name)
+            # doing the actual training
+            train(fnn, train_x, train_y, config)
+            evaluate(fnn, test_x, test_y)
+            # end this experiment
+            fnn.save_checkpoint()
+

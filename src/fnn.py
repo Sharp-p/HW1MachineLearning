@@ -1,9 +1,6 @@
 import os
-from glob import glob
-
 import joblib
-import numpy as np
-import tensorflow as tf
+
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.optimizers import Adam
@@ -29,7 +26,7 @@ class FNNModel:
         self.history = None
         self.is_trained = False
 
-    def build_model(self, hidden_layers=[64, 64], learning_rate=0.001):
+    def build_model(self, hidden_layers=[64, 64], learning_rate=0.001, activation="relu"):
         print("Building model...")
         # sequential model theoretically not ideal for multiple input/outputs
         model = Sequential()
@@ -39,7 +36,7 @@ class FNNModel:
 
         # hidden layers (with ReLU activation function for non-linearity)
         for neurons in hidden_layers:
-            model.add(Dense(neurons, activation="relu"))
+            model.add(Dense(neurons, activation=activation))
 
         # output layer
         model.add(Dense(self.output_dim, activation="linear"))
@@ -58,6 +55,7 @@ class FNNModel:
         :param epochs: epochs to train the network
         :param batch_size: size of batches
         :param val_split: split size of validation set
+        :param callback: callback function
         """
 
         if self.model is None:
@@ -74,7 +72,7 @@ class FNNModel:
             epochs=epochs,
             batch_size=batch_size,
             validation_split=val_split,
-            verbose=1,
+            verbose=0,
             callbacks=[callback]
         )
         self.is_trained = True
@@ -111,6 +109,9 @@ class FNNModel:
         """
         if self.history:
             plt.figure(figsize=(10, 6))
+            """
+            # to check if a history of a model already exist saved in case this training was from a checkpoint
+            # (USELESS since we're never saving the model)
             path = os.path.dirname(os.path.abspath(__file__))
             ful_his = []
             if glob(path + '/../checkpoints/' + self.model_name + '_historyHistory.pkl'):
@@ -119,7 +120,7 @@ class FNNModel:
                 for key, val in self.history.history.items():
                     ful_his[key] = ful_his[key] + val
                 self.history.history = ful_his
-
+            """
             plt.plot(self.history.history['loss'], label="Train Loss")
             plt.plot(self.history.history['val_loss'], label="Validation Loss")
             plt.title(f'Loss curve - {self.model_name}')
@@ -150,8 +151,8 @@ class FNNModel:
                     self.model_name + '_scalerX.pkl')
         joblib.dump(self.scaler_Y, folder_path + '/' +
                     self.model_name + '_scalerY.pkl')
-        joblib.dump(self.history.history, folder_path + '/' +
-                    self.model_name + '_historyHistory.pkl')
+        #joblib.dump(self.history.history, folder_path + '/' +
+        #            self.model_name + '_historyHistory.pkl')
         print("Done!")
 
     def load_checkpoint(self, folder="checkpoints"):
