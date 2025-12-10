@@ -163,11 +163,12 @@ class FNNModel:
         :return:
         """
         path = os.path.dirname(os.path.abspath(__file__))
-        folder_path = os.path.join(path + '/../', folder)
+        folder_path = os.path.join(path + '/../', folder, self.model_name)
         try:
             self.model = load_model(folder_path + '/' + self.model_name + '.keras')
             self.scaler_X = joblib.load(folder_path + '/' + self.model_name + '_scalerX.pkl')
             self.scaler_Y = joblib.load(folder_path + '/' + self.model_name + '_scalerY.pkl')
+            self.is_trained = True
             #self.history.history = joblib.load(folder_path + '/' + self.model_name + '_historyHistory.pkl')
             print("Checkpoint and data scalers loaded!")
         except FileNotFoundError:
