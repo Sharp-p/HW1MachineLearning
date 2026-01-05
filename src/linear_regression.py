@@ -25,7 +25,7 @@ class LinearRegressionModel:
         self.is_trained = True
         print("Done!")
 
-    def evaluate(self, X_test, Y_test) -> float:
+    def evaluate(self, X_test, Y_test):
         if not self.is_trained:
             print("ERROR: model not trained!")
             return
