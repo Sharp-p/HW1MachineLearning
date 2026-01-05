@@ -43,7 +43,15 @@ def train(fnn: FNNModel, train_x, train_y, config=None, new_train=False):
                                                             restore_best_weights=True)],)
     print("Done!")
 
-def evaluate(fnn: FNNModel, test_x, test_y, config):
+def evaluate(fnn: FNNModel, test_x, test_y, config) -> None:
+    """
+    Evaluates the model and saves the config and the value of the metrics.
+    :param fnn: The FNN
+    :param test_x: Input of the model
+    :param test_y: Expected output of the model
+    :param config: Configuration of the model
+    :return: None.
+    """
     pred, mse, r2 = fnn.evaluate(test_x, test_y)
     result_data = config.copy()
     result_data["mse"] = mse
